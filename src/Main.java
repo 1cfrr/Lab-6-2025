@@ -81,8 +81,8 @@ public class Main {
         generator.start();
         integrator.start();
         try {
-            Thread.sleep(50);
-            System.out.println("Основной поток: прошло 50 мс, прерываем рабочие потоки");
+            Thread.sleep(100);
+            System.out.println("Основной поток: прошло 200 мс, прерываем рабочие потоки");
             generator.interrupt();
             integrator.interrupt();
 
@@ -93,14 +93,6 @@ public class Main {
         try {
             generator.join(100);
             integrator.join(100);
-
-            if (generator.isAlive()) {
-                System.out.println("Generator всё ещё жив, принудительно останавливаем...");
-            }
-            if (integrator.isAlive()) {
-                System.out.println("Integrator всё ещё жив, принудительно останавливаем...");
-            }
-
         } catch (InterruptedException e) {
             System.out.println("Ошибка при ожидании завершения потоков");
         }

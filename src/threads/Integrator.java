@@ -22,12 +22,24 @@ public class Integrator extends Thread {
                     System.out.println(getName() + ": Прерван перед обработкой");
                     throw new InterruptedException();
                 }
-
+                if(task.getFunction()==null) {
+                    int waitCount = 0;
+                    while (task.getFunction() == null && waitCount < 20) {
+                        try {
+                            Thread.sleep(1);
+                            waitCount++;
+                        } catch (InterruptedException e) {
+                            System.out.println(getName() + ": Прерван во время ожидания");
+                            throw e;
+                        }
+                    }
+                }
                 semaphore.beginRead();
 
                 boolean taskProcessed = false;
 
                 try {
+
                     if (task.getFunction() != null) {
                         double left = task.getLeftBorder();
                         double right = task.getRightBorder();
@@ -42,7 +54,6 @@ public class Integrator extends Thread {
                             System.out.printf("%s[%d]: ERROR - %s%n", getName(), i, e.getMessage());
                         }
 
-                        // Очищаем задание
                         task.setFunction(null);
                         taskProcessed = true;
                     }
@@ -53,16 +64,9 @@ public class Integrator extends Thread {
 
                 if (taskProcessed) {
                     try {
-                        Thread.sleep(15);
+                        Thread.sleep(10);
                     } catch (InterruptedException e) {
                         System.out.println(getName() + ": Прерван после обработки");
-                        throw e;
-                    }
-                } else {
-                    try {
-                        Thread.sleep(5);
-                    } catch (InterruptedException e) {
-                        System.out.println(getName() + ": Прерван во время ожидания");
                         throw e;
                     }
                 }
@@ -72,7 +76,7 @@ public class Integrator extends Thread {
 
         } catch (InterruptedException e) {
             System.out.println(getName() + ": Прерван с исключением.");
-            Thread.currentThread().interrupt(); // Восстанавливаем флаг
+            Thread.currentThread().interrupt();
         }
     }
 }

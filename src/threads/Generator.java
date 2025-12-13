@@ -23,14 +23,13 @@ public class Generator extends Thread {
                     throw new InterruptedException();
                 }
 
+                semaphore.beginWrite();
                 double base = 1 + Math.random() * 9;
                 double left = Math.random() * 100;
                 double right = 100 + Math.random() * 100;
                 double step = Math.random();
 
                 Log logFunction = new Log(base);
-
-                semaphore.beginWrite();
 
                 try {
                     task.setFunction(logFunction);
